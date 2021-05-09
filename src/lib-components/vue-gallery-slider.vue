@@ -1,43 +1,25 @@
 <template>
-  <div class="vue-gallery-slider" :class="{'hide-scrollbar':hideScrollbar}">
-    <div class="scroll-container">
-      <div ref="content" class="vue-gallery-slider_content" :class="{ invisible: !isInitialised }">
-        <slot />
-      </div>
-    </div>
+  <div class="vue-gallery-slider">
+    <GalleryContainer :hide-scrollbar="hideScrollbar">
+      <slot />
+    </GalleryContainer>
+    <PageIndicator :page-amount="5" v-model="currentPage" variant="light" class="vue-gallery-slider__page-indicator" />
   </div>
 </template>
 
 <script lang="ts">
-import {Vue, Component, Ref, Prop} from 'vue-property-decorator';
+import {Vue, Component, Prop} from 'vue-property-decorator';
+import GalleryContainer from "@/lib-components/components/gallery-container.vue";
+import PageIndicator from "@/lib-components/components/page-indicator.vue";
 
-@Component({})
+@Component({
+  components: {PageIndicator, GalleryContainer}
+})
 export default class VueGallerySlider extends Vue {
-
   @Prop()
   hideScrollbar!: boolean;
 
-  @Ref('content')
-  private content!: HTMLElement;
-
-
-  isInitialised = false;
-
-  mounted() {
-    const rect = this.content.getBoundingClientRect();
-    console.log('container ', rect);
-
-    this.$nextTick(() => {
-      this.isInitialised = true;
-    });
-  }
-
-  initialize() {
-    const rect = this.content.getBoundingClientRect();
-    console.log('container ', rect);
-    const tiles = this.content.children;
-    console.log('container ', tiles.length);
-  }
+  currentPage = 0;
 }
 </script>
 
@@ -46,19 +28,7 @@ export default class VueGallerySlider extends Vue {
   width: 100%;
   overflow: hidden;
 }
-.vue-gallery-slider.hide-scrollbar .scroll-container {
-  margin-bottom: -12px;
-}
-.scroll-container {
-  overflow-x: auto;
-}
-.vue-gallery-slider_content {
-  display: flex;
-}
-.vue-gallery-slider_content.invisible {
-  opacity: 0;
-}
-.vue-gallery-slider_content > * {
-  flex: 0 0 auto;
+.vue-gallery-slider__page-indicator {
+  margin-top: 2rem;
 }
 </style>

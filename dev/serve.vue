@@ -25,8 +25,8 @@ export default Vue.extend({
 
 <template>
   <div id="app" style="display: flex; justify-content: center">
-    <div>
-      <div style="background-color:rgba(186,186,186,0.4); width: 60vw; padding: 20px;">
+    <div style="background-color:rgba(186,186,186,0.2); width: 60vw; padding: 20px;">
+      <div style="margin-bottom: 20px;">
         <vue-gallery-slider :hide-scrollbar="true">
           <example-tile v-for="i in tileRangeArray" :index="i" :key="i" />
         </vue-gallery-slider>
@@ -34,3 +34,10 @@ export default Vue.extend({
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background: rgb(34, 193, 195);
+  background: radial-gradient(circle, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+}
+</style>

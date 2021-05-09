@@ -17,6 +17,7 @@
 ### Sub-Components
 ### Horizontal Scroll Container
 - prop: hideScrollbar
+- prop: selectedPage
 - slot: default
     - The slot for the content(the gallery tiles).
     - Each tile should have the same size.

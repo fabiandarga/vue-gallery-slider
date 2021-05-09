@@ -1,6 +1,6 @@
 <template>
   <div class="gallery-container-wrapper">
-    <div class="gallery-container" :class="{ 'hide-scrollbar': hideScrollbar }">
+    <div ref="container" class="gallery-container" :class="{ 'hide-scrollbar': hideScrollbar }">
       <div ref="content" class="vue-gallery-slider_content" :class="{ invisible: !isInitialised }">
         <slot />
       </div>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component, Prop, Ref} from 'vue-property-decorator';
+import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
 
 const RESIZE_DEBOUNCE_MS = 100;
@@ -23,13 +23,21 @@ export default class GalleryContainer extends Vue {
   @Prop()
   hideScrollbar!: boolean;
 
+  @Prop({ default: 0 })
+  selectedPage!: number;
+
   @Ref('content')
   private content!: HTMLElement;
+
+  @Ref('container')
+  private container!: HTMLElement;
 
   isInitialised = false;
   resizeListener: EventListener | null = null;
   initialTileWidth!: number;
   initialTileMargin!: {left:number, right:number};
+
+  adjustedTileWidth!: number;
 
   mounted() {
     this.initialize().then(() => {
@@ -67,6 +75,17 @@ export default class GalleryContainer extends Vue {
     this.onResize();
   }
 
+  @Watch('selectedPage', { immediate: true })
+  onPageChange(newPage: number) {
+    this.scrollToPage(newPage);
+  }
+
+  scrollToPage(pageIndex: number) {
+    if (this.container && this.content) {
+      this.container.scrollLeft = this.content.getBoundingClientRect().width * pageIndex;
+    }
+  }
+
   onResize() {
     const tiles = this.content.children;
     if (tiles.length === 0) {
@@ -83,7 +102,12 @@ export default class GalleryContainer extends Vue {
       this.adjustMarginsToFitTiles(visibleTilesAmount)
     } else {
      this.addMarginToAllTiles(0); // resets to initial value
+      this.adjustedTileWidth = this.initialTileWidth;
     }
+    this.$nextTick(() => {
+      this.scrollToPage(this.selectedPage);
+    });
+    this.emitResizeEvent();
   }
 
   adjustMarginsToFitTiles(tileAmount: number) {
@@ -93,6 +117,7 @@ export default class GalleryContainer extends Vue {
     const offset = Math.round(expectedContentWidth - actualContentWidth);
     const marginToAdd = Math.round(offset / tileAmount /2);
     this.addMarginToAllTiles(marginToAdd);
+    this.adjustedTileWidth = this.initialTileWidth + (marginToAdd * 2);
   }
 
   getVisibleTiles(container: HTMLElement, tile: HTMLElement): number {
@@ -126,6 +151,26 @@ export default class GalleryContainer extends Vue {
     const right = this.initialTileMargin.right + marginToAdd;
     tile.style.marginLeft = left+'px';
     tile.style.marginRight = right+'px';
+  }
+
+  @Emit('resize')
+  async emitResizeEvent() {
+    await this.$nextTick();
+    const containerWidth = this.content.getBoundingClientRect().width;
+    const tileWidth = this.initialTileWidth;
+    const pages = this.getPageCount();
+    const currentPage = this.getCurrentPage();
+    return { containerWidth, tileWidth, pages, currentPage };
+  }
+
+  getPageCount(): number {
+    const containerWidth = this.content.getBoundingClientRect().width;
+    const tiles = this.content.children;
+    return Math.ceil(this.adjustedTileWidth * tiles.length / containerWidth);
+  }
+
+  getCurrentPage(): number {
+    return 3;
   }
 }
 </script>

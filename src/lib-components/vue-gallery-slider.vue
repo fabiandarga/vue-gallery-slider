@@ -1,6 +1,6 @@
 <template>
   <div class="vue-gallery-slider">
-    <GalleryContainer :selected-page="currentPage" :hide-scrollbar="hideScrollbar" @resize="onResize">
+    <GalleryContainer :selected-page="currentPage" :hide-scrollbar="hideScrollbar" @resize="onResize" @scroll="onScroll">
       <slot />
     </GalleryContainer>
     <PageIndicator :page-amount="pages" v-model="currentPage" variant="light" class="vue-gallery-slider__page-indicator" />
@@ -26,6 +26,11 @@ export default class VueGallerySlider extends Vue {
     console.log('resize',  data);
     this.currentPage = data.currentPage;
     this.pages = data.pages;
+  }
+
+  onScroll(data: { page:number, horizontalOffset:number}) {
+    console.log('scroll ', data);
+    this.currentPage = data.page;
   }
 }
 </script>

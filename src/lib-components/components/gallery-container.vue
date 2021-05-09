@@ -13,6 +13,7 @@ import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
 
 const RESIZE_DEBOUNCE_MS = 100;
+const SCROLL_DEBOUNCE_MS = 100;
 
 const MIN_FRACTION = 0.15;
 const MAX_FRACTION = 0.75;
@@ -32,8 +33,12 @@ export default class GalleryContainer extends Vue {
   @Ref('container')
   private container!: HTMLElement;
 
-  isInitialised = false;
+  currentPage = 0;
+
   resizeListener: EventListener | null = null;
+  scrollListener: EventListener | null = null;
+
+  isInitialised = false;
   initialTileWidth!: number;
   initialTileMargin!: {left:number, right:number};
 
@@ -46,10 +51,17 @@ export default class GalleryContainer extends Vue {
       });
     });
     this.addResizeListener();
+    this.addScrollListener();
   }
 
   beforeDestroy() {
     this.removeResizeListener();
+    this.removeScrollListener();
+  }
+
+  addScrollListener() {
+    this.scrollListener = debounce(this.onScroll.bind(this), SCROLL_DEBOUNCE_MS);
+    this.container.addEventListener('scroll', this.scrollListener);
   }
 
   addResizeListener() {
@@ -60,6 +72,12 @@ export default class GalleryContainer extends Vue {
   removeResizeListener() {
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
+    }
+  }
+
+  removeScrollListener() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
     }
   }
 
@@ -77,13 +95,34 @@ export default class GalleryContainer extends Vue {
 
   @Watch('selectedPage', { immediate: true })
   onPageChange(newPage: number) {
-    this.scrollToPage(newPage);
+    if (this.currentPage !== newPage) {
+      this.scrollToPage(newPage);
+    }
   }
 
   scrollToPage(pageIndex: number) {
     if (this.container && this.content) {
+      this.currentPage = pageIndex;
       this.container.scrollLeft = this.content.getBoundingClientRect().width * pageIndex;
     }
+  }
+
+  onScroll(event: Event) {
+    if (!event.target) {
+      console.log(event);
+      return;
+    }
+    let currentTarget = event.target as HTMLElement;
+    const horizontal = currentTarget.scrollLeft;
+    // const vertical = currentTarget.scrollTop;
+    const page = Math.ceil(horizontal / this.content.getBoundingClientRect().width);
+    this.currentPage = page;
+    this.emitScrollEvent(page, horizontal);
+  }
+
+  @Emit('scroll')
+  emitScrollEvent(page: number, horizontalOffset: number) {
+    return { page, horizontalOffset };
   }
 
   onResize() {

@@ -1,7 +1,7 @@
 {
   "name": "vue-gallery-slider",
   "version": "1.0.0",
-  "description": "",
+  "description": "A horizontal scrolling gallery.",
   "main": "dist/vue-gallery-slider.ssr.js",
   "browser": "dist/vue-gallery-slider.esm.js",
   "module": "dist/vue-gallery-slider.esm.js",

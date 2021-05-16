@@ -1,7 +1,7 @@
 import Vue, { PluginFunction, VueConstructor } from 'vue';
 
 
-declare const VueGallerySlider: PluginFunction<any>;
-export default VueGallerySlider;
+declare const VueGallerySliderPlugin: PluginFunction<any>;
+export default VueGallerySliderPlugin;
 
-export const VueGallerySliderSample: VueConstructor<Vue>;
+export const VueGallerySlider: VueConstructor<Vue>;

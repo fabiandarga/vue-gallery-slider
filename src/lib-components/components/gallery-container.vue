@@ -37,6 +37,7 @@ export default class GalleryContainer extends Vue {
 
   resizeListener: EventListener | null = null;
   scrollListener: EventListener | null = null;
+  contentChangeListener: MutationObserver | null = null;
 
   isInitialised = false;
   initialTileWidth!: number;
@@ -45,18 +46,31 @@ export default class GalleryContainer extends Vue {
   adjustedTileWidth!: number;
 
   mounted() {
-    this.initialize().then(() => {
-      this.$nextTick(() => {
-        this.isInitialised = true;
-      });
-    });
+    this.initialize();
     this.addResizeListener();
     this.addScrollListener();
+    this.addContentChangeListener();
   }
 
   beforeDestroy() {
     this.removeResizeListener();
     this.removeScrollListener();
+    this.removeContentChangeListener();
+  }
+
+  addContentChangeListener() {
+    // Create the observer (and what to do on changes...)
+    this.contentChangeListener = new MutationObserver(() => {
+      this.$nextTick().then(() => {
+        this.initialize();
+      });
+    });
+
+    // Setup the observer
+    this.contentChangeListener.observe(
+        this.content,
+        { attributes: true, childList: true, characterData: true, subtree: true }
+    );
   }
 
   addScrollListener() {
@@ -81,6 +95,12 @@ export default class GalleryContainer extends Vue {
     }
   }
 
+  removeContentChangeListener() {
+    if (this.contentChangeListener) {
+      this.contentChangeListener.disconnect();
+    }
+  }
+
   async initialize() {
     const tiles = this.content.children;
     if (tiles.length === 0) {
@@ -91,6 +111,9 @@ export default class GalleryContainer extends Vue {
     this.initialTileMargin = this.getMargin(tile1);
 
     this.onResize();
+    this.$nextTick(() => {
+      this.isInitialised = true;
+    });
   }
 
   @Watch('selectedPage', { immediate: true })

@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@types/debounce": "^1.2.0",
-    "debounce": "^1.2.1"
+    "debounce": "^1.2.1",
+    "vue": "^2.6.12"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

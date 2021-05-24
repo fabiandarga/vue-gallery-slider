@@ -221,7 +221,7 @@ export default class GalleryContainer extends Vue {
     const containerWidth = this.content.getBoundingClientRect().width;
     const tileWidth = this.initialTileWidth;
     const pages = this.getPageCount();
-    const currentPage = this.getCurrentPage();
+    const currentPage = this.selectedPage;
     return { containerWidth, tileWidth, pages, currentPage };
   }
 
@@ -229,10 +229,6 @@ export default class GalleryContainer extends Vue {
     const containerWidth = this.content.getBoundingClientRect().width;
     const tiles = this.content.children;
     return Math.ceil(this.adjustedTileWidth * tiles.length / containerWidth);
-  }
-
-  getCurrentPage(): number {
-    return 3;
   }
 }
 </script>

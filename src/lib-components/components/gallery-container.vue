@@ -153,7 +153,7 @@ export default class GalleryContainer extends Vue {
     if (tiles.length === 0) {
       return;
     }
-    const visibleTiles = this.getVisibleTiles(this.content, tiles[0] as HTMLElement);
+    const visibleTiles = this.getVisibleTiles(this.content, this.initialTileWidth);
     const visibleFractionLastTile = visibleTiles % 1;
 
     if (visibleFractionLastTile > MAX_FRACTION) {
@@ -182,8 +182,7 @@ export default class GalleryContainer extends Vue {
     this.adjustedTileWidth = this.initialTileWidth + (marginToAdd * 2);
   }
 
-  getVisibleTiles(container: HTMLElement, tile: HTMLElement): number {
-    const tileWidth = this.getOuterWidth(tile);
+  getVisibleTiles(container: HTMLElement, tileWidth: number): number {
     const containerWidth = container.getBoundingClientRect().width;
     return containerWidth / tileWidth;
   }

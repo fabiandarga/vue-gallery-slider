@@ -11,6 +11,7 @@
 <script lang="ts">
 import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
+import {addHorizontalMarginToElement, getMargin, getOuterWidth} from "@/lib-components/util/htmlUtils";
 
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
@@ -107,8 +108,8 @@ export default class GalleryContainer extends Vue {
       return;
     }
     let tile1 = tiles[0] as HTMLElement;
-    this.initialTileWidth = this.getOuterWidth(tile1);
-    this.initialTileMargin = this.getMargin(tile1);
+    this.initialTileWidth = getOuterWidth(tile1);
+    this.initialTileMargin = getMargin(tile1);
 
     this.onResize();
     this.$nextTick(() => {
@@ -187,31 +188,18 @@ export default class GalleryContainer extends Vue {
     return containerWidth / tileWidth;
   }
 
-  getOuterWidth(element: HTMLElement): number {
-    const { left, right } = this.getMargin(element);
-    return element.getBoundingClientRect().width + left + right;
-  }
-
-  getMargin(element: HTMLElement):{ left:number, right:number } {
-    const style = window.getComputedStyle(element);
-    return {
-      left: parseInt(style.marginLeft, 10),
-      right: parseInt(style.marginRight, 10),
-    };
-  }
-
   addMarginToAllTiles(marginToAdd: number) {
     const tiles = this.content.children;
     Array.from(tiles).forEach((tile) => {
-      this.addMarginToTile(tile as HTMLElement, marginToAdd);
+      this.resetTileMargins(tile);
+      addHorizontalMarginToElement(tile, marginToAdd);
     });
   }
 
-  addMarginToTile(tile: HTMLElement, marginToAdd:number) {
-    const left = this.initialTileMargin.left + marginToAdd;
-    const right = this.initialTileMargin.right + marginToAdd;
-    tile.style.marginLeft = left+'px';
-    tile.style.marginRight = right+'px';
+  resetTileMargins(tile: HTMLElement) {
+    const margins = this.initialTileMargin;
+    tile.style.marginLeft = margins.left+'px';
+    tile.style.marginRight = margins.right+'px';
   }
 
   @Emit('resize')

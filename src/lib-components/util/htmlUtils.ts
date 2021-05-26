@@ -21,7 +21,7 @@ export const getMargin = (element: HTMLElement):{ left:number, right:number } =>
  * @param {HTMLElement} elem
  * @param {number} marginToAdd
  */
-export const addHorizontalMarginToElement = (elem: HTMLDivElement, marginToAdd: number) => {
+export const addHorizontalMarginToElement = (elem: HTMLElement, marginToAdd: number) => {
   const margins = getMargin(elem);
   const left = margins.left + marginToAdd;
   const right = margins.right + marginToAdd;

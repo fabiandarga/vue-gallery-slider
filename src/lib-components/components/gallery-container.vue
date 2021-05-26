@@ -138,7 +138,6 @@ export default class GalleryContainer extends Vue {
     }
     let currentTarget = event.target as HTMLElement;
     const horizontal = currentTarget.scrollLeft;
-    // const vertical = currentTarget.scrollTop;
     const page = Math.ceil(horizontal / this.content.getBoundingClientRect().width);
     this.currentPage = page;
     this.emitScrollEvent(page, horizontal);
@@ -191,8 +190,8 @@ export default class GalleryContainer extends Vue {
   addMarginToAllTiles(marginToAdd: number) {
     const tiles = this.content.children;
     Array.from(tiles).forEach((tile) => {
-      this.resetTileMargins(tile);
-      addHorizontalMarginToElement(tile, marginToAdd);
+      this.resetTileMargins(tile as HTMLElement);
+      addHorizontalMarginToElement(tile as HTMLElement, marginToAdd);
     });
   }
 

@@ -42,6 +42,7 @@ export default class GalleryContainer extends Vue {
   scrollListener: EventListener | null = null;
   contentChangeListener: MutationObserver | null = null;
   dragListener: { disconnect: () => void } | null = null;
+  wheelListener: { disconnect: () => void } | null = null;
 
   isInitialised = false;
   initialTileWidth!: number;
@@ -81,7 +82,7 @@ export default class GalleryContainer extends Vue {
   }
 
   addWheelListener() {
-    swapScroll(this.container);
+    this.wheelListener = swapScroll(this.container);
   }
 
   addScrollListener() {
@@ -96,6 +97,13 @@ export default class GalleryContainer extends Vue {
 
   addDragListener() {
     this.dragListener = buildMouseDragHandler(this.container);
+  }
+
+  removeWheelListener() {
+    if (this.wheelListener !== null) {
+      this.wheelListener.disconnect();
+      this.wheelListener = null;
+    }
   }
 
   removeResizeListener() {

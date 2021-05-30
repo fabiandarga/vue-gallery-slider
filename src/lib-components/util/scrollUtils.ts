@@ -13,5 +13,12 @@ export const swapScroll = (elem: HTMLElement) => {
     // this needs fixing for RTL
     elem.scrollLeft += deltaY;
   }
+
  elem.addEventListener('wheel', onWheel);
+
+  return {
+    disconnect() {
+      elem.removeEventListener('wheel', onWheel);
+    }
+  }
 }

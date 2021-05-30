@@ -12,6 +12,7 @@
 import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
 import {addHorizontalMarginToElement, getMargin, getOuterWidth} from "@/lib-components/util/htmlUtils";
+import {buildMouseDragHandler} from "@/lib-components/util/dragUtils";
 
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
@@ -39,6 +40,7 @@ export default class GalleryContainer extends Vue {
   resizeListener: EventListener | null = null;
   scrollListener: EventListener | null = null;
   contentChangeListener: MutationObserver | null = null;
+  dragListener: { disconnect: () => void } | null = null;
 
   isInitialised = false;
   initialTileWidth!: number;
@@ -51,12 +53,14 @@ export default class GalleryContainer extends Vue {
     this.addResizeListener();
     this.addScrollListener();
     this.addContentChangeListener();
+    this.addDragListener();
   }
 
   beforeDestroy() {
     this.removeResizeListener();
     this.removeScrollListener();
     this.removeContentChangeListener();
+    this.removeDragListener();
   }
 
   addContentChangeListener() {
@@ -84,21 +88,35 @@ export default class GalleryContainer extends Vue {
     window.addEventListener('resize', this.resizeListener);
   }
 
+  addDragListener() {
+    this.dragListener = buildMouseDragHandler(this.container);
+  }
+
   removeResizeListener() {
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
+      this.resizeListener = null;
     }
   }
 
   removeScrollListener() {
     if (this.scrollListener) {
       window.removeEventListener('scroll', this.scrollListener);
+      this.scrollListener = null;
     }
   }
 
   removeContentChangeListener() {
     if (this.contentChangeListener) {
       this.contentChangeListener.disconnect();
+      this.contentChangeListener = null;
+    }
+  }
+
+  removeDragListener() {
+    if (this.dragListener) {
+      this.dragListener.disconnect();
+      this.dragListener = null;
     }
   }
 
@@ -231,6 +249,13 @@ export default class GalleryContainer extends Vue {
 }
 .vue-gallery-slider_content {
   display: flex;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 .vue-gallery-slider_content.invisible {
   opacity: 0;

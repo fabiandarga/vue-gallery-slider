@@ -13,6 +13,7 @@ import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
 import {addHorizontalMarginToElement, getMargin, getOuterWidth} from "@/lib-components/util/htmlUtils";
 import {buildMouseDragHandler} from "@/lib-components/util/dragUtils";
+import {swapScroll} from "@/lib-components/util/scrollUtils";
 
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
@@ -50,6 +51,7 @@ export default class GalleryContainer extends Vue {
 
   mounted() {
     this.initialize();
+    this.addWheelListener();
     this.addResizeListener();
     this.addScrollListener();
     this.addContentChangeListener();
@@ -76,6 +78,10 @@ export default class GalleryContainer extends Vue {
         this.content,
         { attributes: true, childList: true, characterData: true, subtree: true }
     );
+  }
+
+  addWheelListener() {
+    swapScroll(this.container);
   }
 
   addScrollListener() {

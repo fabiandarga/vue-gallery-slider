@@ -22,7 +22,6 @@ export const buildMouseDragHandler = (elem: HTMLElement) => {
    * mouseup has to clean up the move and up listeners
    */
   function mouseUpHandler() {
-      console.log('mouseupped');
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
       activeMouseMoveHandler = null;
@@ -30,8 +29,6 @@ export const buildMouseDragHandler = (elem: HTMLElement) => {
   }
 
   function mouseDownHandler () {
-    console.log('mouse downed');
-
     removeMouseMoveListener();
     document.addEventListener('mousemove', mouseMoveHandler);
     activeMouseMoveHandler = mouseMoveHandler;
@@ -42,7 +39,6 @@ export const buildMouseDragHandler = (elem: HTMLElement) => {
   }
 
   function removeMouseDownListener() {
-    console.log('remove down')
     if (activeMouseDownHandler !== null) {
       elem.removeEventListener('mousedown', activeMouseDownHandler);
     }

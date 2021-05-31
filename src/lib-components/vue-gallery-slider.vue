@@ -23,13 +23,11 @@ export default class VueGallerySlider extends Vue {
   pages = 0;
 
   onResize(data: {containerWidth: number, tileWidth: number, pages: number, currentPage: number }) {
-    console.log('resize',  data);
     this.currentPage = data.currentPage;
     this.pages = data.pages;
   }
 
   onScroll(data: { page:number, horizontalOffset:number}) {
-    console.log('scroll ', data);
     this.currentPage = data.page;
   }
 }

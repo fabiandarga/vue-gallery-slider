@@ -19,12 +19,13 @@ export const getMargin = (element: HTMLElement):{ left:number, right:number } =>
 /**
  * Adds the margin to both sides
  * @param {HTMLElement} elem
- * @param {number} marginToAdd
+ * @param marginLeft
+ * @param marginRight
  */
-export const addHorizontalMarginToElement = (elem: HTMLElement, marginToAdd: number) => {
+export const addHorizontalMarginToElement = (elem: HTMLElement, marginLeft: number, marginRight: number) => {
   const margins = getMargin(elem);
-  const left = margins.left + marginToAdd;
-  const right = margins.right + marginToAdd;
+  const left = margins.left + marginLeft;
+  const right = margins.right + marginRight;
   elem.style.marginLeft = left+'px';
   elem.style.marginRight = right+'px';
 };

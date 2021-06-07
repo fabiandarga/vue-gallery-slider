@@ -30,6 +30,9 @@ export default class GalleryContainer extends Vue {
   @Prop({ default: 0 })
   selectedPage!: number;
 
+  @Prop({ type: String, default: 'both' })
+  addMarginToSide!: 'both' | 'left' | 'right';
+
   @Ref('content')
   private content!: HTMLElement;
 
@@ -213,7 +216,7 @@ export default class GalleryContainer extends Vue {
     const actualContentWidth = tileAmount * this.initialTileWidth;
     const expectedContentWidth = contentBounds.width + (this.initialTileWidth / 2);
     const offset = Math.round(expectedContentWidth - actualContentWidth);
-    const marginToAdd = Math.round(offset / tileAmount /2);
+    const marginToAdd = Math.round(offset / tileAmount);
     this.addMarginToAllTiles(marginToAdd);
     this.adjustedTileWidth = this.initialTileWidth + (marginToAdd * 2);
   }
@@ -227,8 +230,20 @@ export default class GalleryContainer extends Vue {
     const tiles = this.content.children;
     Array.from(tiles).forEach((tile) => {
       this.resetTileMargins(tile as HTMLElement);
-      addHorizontalMarginToElement(tile as HTMLElement, marginToAdd);
+      const margins = this.getMarginPerSide(marginToAdd);
+      addHorizontalMarginToElement(tile as HTMLElement, margins.left, margins.right);
     });
+  }
+
+  getMarginPerSide(totalMargin: number) : {left: number, right: number} {
+    if (this.addMarginToSide == 'both') {
+      const divided = Math.round(totalMargin / 2);
+      return {left: divided, right: divided};
+    } else if (this.addMarginToSide === 'left') {
+      return {left: totalMargin, right: 0};
+    } else{
+      return {left: 0, right: totalMargin};
+    }
   }
 
   resetTileMargins(tile: HTMLElement) {

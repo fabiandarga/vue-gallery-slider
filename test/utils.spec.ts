@@ -40,7 +40,7 @@ test('add margins to element', (t) => {
     elem.style.marginRight = '5px';
     elem.style.marginLeft = '5px';
 
-    addHorizontalMarginToElement(elem, 10);
+    addHorizontalMarginToElement(elem, 10, 10);
 
     t.is(elem.style.marginRight, '15px');
     t.is(elem.style.marginLeft, '15px');

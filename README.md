@@ -41,3 +41,19 @@ Page items are on a horizontal line with an equal distribution and vertically al
 The indicator component has no other styling (only the page items are styles).
 
 Changes in the selectedPage or pages prop should rerender immediately.
+
+## Development
+#### Start the development server
+```shell
+yarn serve
+```
+
+#### Run tests
+```shell
+yarn test
+```
+
+#### Build the project
+```shell
+yarn build
+```

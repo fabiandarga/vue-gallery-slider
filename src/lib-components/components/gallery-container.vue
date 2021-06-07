@@ -168,11 +168,15 @@ export default class GalleryContainer extends Vue {
       console.log(event);
       return;
     }
+
     let currentTarget = event.target as HTMLElement;
     const horizontal = currentTarget.scrollLeft;
     const page = Math.ceil(horizontal / this.content.getBoundingClientRect().width);
     this.currentPage = page;
     this.emitScrollEvent(page, horizontal);
+
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   @Emit('scroll')

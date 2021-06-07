@@ -39,6 +39,6 @@ export default class VueGallerySlider extends Vue {
   overflow: hidden;
 }
 .vue-gallery-slider__page-indicator {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 </style>

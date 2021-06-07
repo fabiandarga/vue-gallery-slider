@@ -263,7 +263,8 @@ export default class GalleryContainer extends Vue {
   overflow-x: auto;
 }
 .gallery-container.hide-scrollbar {
-  margin-bottom: -12px;
+  margin-bottom: -13px;
+  padding-bottom: 13px;
 }
 .vue-gallery-slider_content {
   display: flex;

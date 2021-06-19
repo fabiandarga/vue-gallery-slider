@@ -22,3 +22,29 @@ export const swapScroll = (elem: HTMLElement) => {
     }
   }
 }
+
+/**
+ * more modern browser implement the passive option, older browsers do not
+ */
+export const checkForPassiveMode = () => {
+  let passiveSupported = false;
+
+  try {
+    const options = {
+      get passive() { // This function will be called when the browser
+        //   attempts to access the passive property.
+        passiveSupported = true;
+        return false;
+      }
+    };
+
+    // the following is a hack to check whether the 'passive' option is evaluated by the browser.
+    // @ts-ignore
+    window.addEventListener("test", null, options);
+    // @ts-ignore
+    window.removeEventListener("test", null, options);
+  } catch(err) {
+    passiveSupported = false;
+  }
+  return passiveSupported;
+}

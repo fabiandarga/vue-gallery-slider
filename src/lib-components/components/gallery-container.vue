@@ -1,5 +1,5 @@
 <template>
-  <div class="gallery-container-wrapper">
+  <div ref="wrapper" class="gallery-container-wrapper">
     <div ref="container" class="gallery-container" :class="{ 'hide-scrollbar': hideScrollbar }">
       <div ref="content" class="vue-gallery-slider_content" :class="{ invisible: !isInitialised }">
         <slot />
@@ -13,7 +13,11 @@ import {Vue, Component, Prop, Ref, Emit, Watch} from 'vue-property-decorator';
 import { debounce } from 'debounce';
 import {addHorizontalMarginToElement, getMargin, getOuterWidth} from "@/lib-components/util/htmlUtils";
 import {buildMouseDragHandler} from "@/lib-components/util/dragUtils";
-import {swapScroll} from "@/lib-components/util/scrollUtils";
+import {checkForPassiveMode, swapScroll} from "@/lib-components/util/scrollUtils";
+
+function preventDefault(e:Event) {
+  e.preventDefault();
+}
 
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
@@ -39,6 +43,9 @@ export default class GalleryContainer extends Vue {
   @Ref('container')
   private container!: HTMLElement;
 
+  @Ref('wrapper')
+  private wrapper!: HTMLElement;
+
   currentPage = 0;
 
   resizeListener: EventListener | null = null;
@@ -60,13 +67,16 @@ export default class GalleryContainer extends Vue {
     this.addScrollListener();
     this.addContentChangeListener();
     this.addDragListener();
+    this.addPreventListener();
   }
 
   beforeDestroy() {
+    this.removeWheelListener();
     this.removeResizeListener();
     this.removeScrollListener();
     this.removeContentChangeListener();
     this.removeDragListener();
+    this.removePreventListener();
   }
 
   addContentChangeListener() {
@@ -89,8 +99,27 @@ export default class GalleryContainer extends Vue {
   }
 
   addScrollListener() {
-    this.scrollListener = debounce(this.onScroll.bind(this), SCROLL_DEBOUNCE_MS);
+    const debouncedHandler = debounce(this.onScroll.bind(this), SCROLL_DEBOUNCE_MS);
+    this.scrollListener = (event) => {
+      debouncedHandler(event);
+      return;
+    };
     this.container.addEventListener('scroll', this.scrollListener);
+  }
+
+  addPreventListener() {
+    // modern Chrome requires { passive: false } when adding event
+    const wheelOpt = checkForPassiveMode() ? { passive: false } : false;
+    const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+
+    this.wrapper.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
+    this.wrapper.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+  }
+
+  removePreventListener() {
+    const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+    this.wrapper.removeEventListener('DOMMouseScroll', preventDefault, false); // older FF
+    this.wrapper.removeEventListener(wheelEvent, preventDefault); // modern desktop
   }
 
   addResizeListener() {
@@ -168,7 +197,6 @@ export default class GalleryContainer extends Vue {
 
   onScroll(event: Event) {
     if (!event.target) {
-      console.log(event);
       return;
     }
 
@@ -177,9 +205,6 @@ export default class GalleryContainer extends Vue {
     const page = Math.ceil(horizontal / this.content.getBoundingClientRect().width);
     this.currentPage = page;
     this.emitScrollEvent(page, horizontal);
-
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   @Emit('scroll')

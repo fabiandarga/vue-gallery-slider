@@ -22,7 +22,10 @@ function preventDefault(e:Event) {
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
 
+/** if visible part is below this, action will be triggered */
 const MIN_FRACTION = 0.15;
+
+/** if visible part is more than this, action will be triggered */
 const MAX_FRACTION = 0.75;
 
 @Component({})
@@ -62,6 +65,7 @@ export default class GalleryContainer extends Vue {
 
   mounted() {
     this.initialize();
+
     this.addWheelListener();
     this.addResizeListener();
     this.addScrollListener();
@@ -90,7 +94,7 @@ export default class GalleryContainer extends Vue {
     // Setup the observer
     this.contentChangeListener.observe(
         this.content,
-        { attributes: true, childList: true, characterData: true, subtree: true }
+        { attributes: false, childList: true, characterData: true, subtree: true }
     );
   }
 

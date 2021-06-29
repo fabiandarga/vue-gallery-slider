@@ -19,6 +19,10 @@ function preventDefault(e:Event) {
   e.preventDefault();
 }
 
+function stopPropagation(e:Event) {
+  e.stopPropagation();
+}
+
 const RESIZE_DEBOUNCE_MS = 100;
 const SCROLL_DEBOUNCE_MS = 100;
 
@@ -72,6 +76,7 @@ export default class GalleryContainer extends Vue {
     this.addContentChangeListener();
     this.addDragListener();
     this.addPreventListener();
+    this.allowScrollingInside();
   }
 
   beforeDestroy() {
@@ -88,6 +93,7 @@ export default class GalleryContainer extends Vue {
     this.contentChangeListener = new MutationObserver(() => {
       this.$nextTick().then(() => {
         this.initialize();
+        this.allowScrollingInside();
       });
     });
 
@@ -168,6 +174,17 @@ export default class GalleryContainer extends Vue {
       this.dragListener.disconnect();
       this.dragListener = null;
     }
+  }
+
+  allowScrollingInside() {
+    // modern Chrome requires { passive: false } when adding event
+    const wheelOpt = checkForPassiveMode() ? { passive: false } : false;
+    const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+
+    this.content.querySelectorAll('.vgs-scrollable').forEach(elem => {
+      elem.addEventListener('DOMMouseScroll', stopPropagation, false); // older FF
+      elem.addEventListener(wheelEvent, stopPropagation, wheelOpt); // modern desktop
+    });
   }
 
   async initialize() {

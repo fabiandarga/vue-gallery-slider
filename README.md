@@ -5,15 +5,6 @@
 - adjusts margin to always show half a "tile" at the end
 - supports ltr and rtl
 
-### Layout
-```
-+------------------+
-| 11  22  33  44  5|
-| 11  22  33  44  5|
-+------------------+ 
-------0-0-0-0-------
-```
-
 ### Sub-Components
 ### Horizontal Scroll Container
 - prop: hideScrollbar
@@ -41,6 +32,9 @@ Page items are on a horizontal line with an equal distribution and vertically al
 The indicator component has no other styling (only the page items are styles).
 
 Changes in the selectedPage or pages prop should rerender immediately.
+
+## Usage
+To allow scrolling inside the content area you need to append the `.vgs-scrollable` class to the HTML element which should allow scrolling
 
 ## Development
 #### Start the development server

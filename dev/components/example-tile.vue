@@ -1,7 +1,8 @@
 <template>
   <div class="example-tile">
     <h3>Some Tile #{{index + 1}}</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt praesent semper feugiat nibh sed pulvinar proin gravida. Cursus metus aliquam eleifend mi. Nunc mattis enim ut tellus. Commodo ullamcorper a lacus vestibulum. A iaculis at erat pellentesque adipiscing commodo elit at imperdiet. Id diam vel quam elementum pulvinar.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+    <p class="scrollable vgs-scrollable">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tincidunt praesent semper feugiat nibh sed pulvinar proin gravida. Cursus metus aliquam eleifend mi. Nunc mattis enim ut tellus. Commodo ullamcorper a lacus vestibulum. A iaculis at erat pellentesque adipiscing commodo elit at imperdiet. Id diam vel quam elementum pulvinar.</p>
   </div>
 </template>
 
@@ -21,5 +22,9 @@ export default {
   width: 200px;
   padding: 10px;
   margin: 0 10px;
+}
+.scrollable {
+  height: 150px;
+  overflow-y: auto;
 }
 </style>

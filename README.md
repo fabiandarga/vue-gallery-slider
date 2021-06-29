@@ -34,7 +34,13 @@ The indicator component has no other styling (only the page items are styles).
 Changes in the selectedPage or pages prop should rerender immediately.
 
 ## Usage
-To allow scrolling inside the content area you need to append the `.vgs-scrollable` class to the HTML element which should allow scrolling
+### enable scrolling inside the gallery content
+To allow scrolling inside the content area you need to append the `.vgs-scrollable` class to the HTML element which should allow scrolling.
+Alternatively use the `allow-scroll` property to pass in one or more css selectors (coma separated):  
+```html
+<VueGallerySlider :allow-scroll="'.selector-1, #id_one'">
+  <!--- ... --->
+```
 
 ## Development
 #### Start the development server

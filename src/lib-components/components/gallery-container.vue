@@ -44,6 +44,9 @@ export default class GalleryContainer extends Vue {
   @Prop({ type: String, default: 'both' })
   addMarginToSide!: 'both' | 'left' | 'right';
 
+  @Prop()
+  allowScroll!: string;
+
   @Ref('content')
   private content!: HTMLElement;
 
@@ -181,10 +184,19 @@ export default class GalleryContainer extends Vue {
     const wheelOpt = checkForPassiveMode() ? { passive: false } : false;
     const wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
 
-    this.content.querySelectorAll('.vgs-scrollable').forEach(elem => {
+    function enableScrolling(elem: HTMLElement) {
       elem.addEventListener('DOMMouseScroll', stopPropagation, false); // older FF
       elem.addEventListener(wheelEvent, stopPropagation, wheelOpt); // modern desktop
-    });
+    }
+
+    this.content.querySelectorAll('.vgs-scrollable')
+        .forEach(elem => enableScrolling(elem as HTMLElement));
+
+    if(this.allowScroll && this.allowScroll.length) {
+      this.content.querySelectorAll(this.allowScroll)
+          .forEach(elem => enableScrolling(elem as HTMLElement));
+    }
+
   }
 
   async initialize() {

@@ -3,6 +3,7 @@
     <GalleryContainer :selected-page="currentPage"
                       :hide-scrollbar="hideScrollbar"
                       :add-margin-to-side="addMarginToSide"
+                      :allow-scroll="allowScroll"
                       @resize="onResize" @scroll="onScroll">
       <slot/>
     </GalleryContainer>
@@ -27,6 +28,9 @@ export default class VueGallerySlider extends Vue {
 
   @Prop({type: String, default: 'both'})
   addMarginToSide!: 'both' | 'left' | 'right';
+
+  @Prop()
+  allowScroll!: string;
 
   currentPage = 0;
   pages = 0;

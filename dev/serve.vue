@@ -27,7 +27,7 @@ export default Vue.extend({
   <div id="app" style="display: flex; justify-content: center">
     <div style="background-color:rgba(186,186,186,0.2); width: 60vw; padding: 20px;">
       <div style="margin-bottom: 20px;">
-        <vue-gallery-slider :hide-scrollbar="true" :add-margin-to-side="'right'">
+        <vue-gallery-slider :hide-scrollbar="true" :add-margin-to-side="'right'" :allow-scroll="'.scrollable'">
           <example-tile v-for="i in tileRangeArray" :index="i" :key="i" />
         </vue-gallery-slider>
       </div>

@@ -20,6 +20,23 @@ function preventDefault(e:Event) {
 }
 
 function stopPropagation(e:Event) {
+  const direction = (e as WheelEvent).deltaY;
+  const target = e.target as HTMLElement;
+  if (!target) {
+    e.stopPropagation();
+    return;
+  }
+  if (direction > 0) {
+    const isBottom = target.scrollHeight - Math.round(target.scrollTop) === target.clientHeight;
+    if (isBottom) {
+      return;
+    }
+  } else if (direction < 0) {
+    const isTop = target.scrollTop === 0;
+    if (isTop) {
+      return;
+    }
+  }
   e.stopPropagation();
 }
 

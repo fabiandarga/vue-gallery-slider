@@ -14,7 +14,7 @@ import minimist from 'minimist';
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
   .toString()
   .split('\n')
-  .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
+  .filter((entry) => !!entry);
 
 // Extract babel preset-env config, to combine with esbrowserslist
 const babelPresetEnvConfig = require('../babel.config')
@@ -48,13 +48,13 @@ const baseConfig = {
     },
     postVue: [
       resolve({
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+        extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.vue'],
       }),
       commonjs(),
     ],
     babel: {
-      exclude: 'node_modules/**',
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+      // exclude: 'node_modules/**',
+      extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.vue'],
       babelHelpers: 'bundled',
     },
   },

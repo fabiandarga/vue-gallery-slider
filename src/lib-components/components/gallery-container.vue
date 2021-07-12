@@ -21,7 +21,7 @@ function preventDefault(e:Event) {
 
 function stopPropagation(e:Event) {
   const direction = (e as WheelEvent).deltaY;
-  const target = e.target as HTMLElement;
+  const target = e.currentTarget as HTMLElement;
   if (!target) {
     e.stopPropagation();
     return;
@@ -353,8 +353,8 @@ export default class GalleryContainer extends Vue {
   overflow-x: auto;
 }
 .gallery-container.hide-scrollbar {
-  margin-bottom: -13px;
-  padding-bottom: 13px;
+  margin-bottom: -15px;
+  padding-bottom: 15px;
 }
 .vue-gallery-slider_content {
   display: flex;

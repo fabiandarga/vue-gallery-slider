@@ -339,6 +339,10 @@ export default class GalleryContainer extends Vue {
 
   getPageCount(): number {
     const containerWidth = this.content.getBoundingClientRect().width;
+    if (!containerWidth) {
+      // safety to prevent division by zero
+      return 1;
+    }
     const tiles = this.content.children;
     return Math.ceil(this.adjustedTileWidth * tiles.length / containerWidth);
   }

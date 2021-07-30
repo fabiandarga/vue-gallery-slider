@@ -8,18 +8,21 @@ export default Vue.extend({
   name: 'ServeDev',
   data: () => {
     return {
-      tiles: 23,
+      tiles: 0,
     }
   },
   components: {ExampleTile},
+  mounted() {
+    setTimeout(() => {
+      // to test initialization with empty content.
+      this.tiles = 22;
+    }, 1000);
+  },
   computed: {
     tileRangeArray() {
       return Array.from(Array(this.tiles).keys());
     }
   },
-  // components: {
-  //  VueGallerySliderSample,
-  // }
 });
 </script>
 
